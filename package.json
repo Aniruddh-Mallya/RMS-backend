@@ -4,8 +4,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx kill-port 5001 & npx nodemon server.js",
-    "dev": "nodemon server"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "sonar": "node sonar-project.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,19 @@
     "psql": "^0.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "sonarqube-scanner": "^4.3.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src//*.{ts,tsx}",
+      "!src//*.d.ts"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text"
+    ]
   }
 }

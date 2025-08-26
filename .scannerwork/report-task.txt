@@ -1,0 +1,6 @@
+projectKey=RMS
+serverUrl=http://localhost:9000
+serverVersion=25.3.0.104237
+dashboardUrl=http://localhost:9000/dashboard?id=RMS
+ceTaskId=43eb1e8f-6600-4cae-b22a-7c17f9949489
+ceTaskUrl=http://localhost:9000/api/ce/task?id=43eb1e8f-6600-4cae-b22a-7c17f9949489
