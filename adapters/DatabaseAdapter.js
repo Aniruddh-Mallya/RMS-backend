@@ -2,7 +2,7 @@ const { Connection, Request, TYPES } = require("tedious");
 require("dotenv").config();
 
 const config = {
-  server: process.env.DB_SERVER, // e.g., your-server.database.windows.net
+  server: process.env.DB_SERVER,
   authentication: {
     type: 'default',
     options: {
@@ -53,5 +53,5 @@ module.exports = {
       connection.execSql(request);
     });
   },
-  TYPES // Export the TYPES object for use in other files
+  TYPES
 };
