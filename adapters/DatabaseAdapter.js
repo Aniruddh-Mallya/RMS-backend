@@ -1,31 +1,57 @@
-const { Pool } = require("pg");
+const { Connection, Request, TYPES } = require("tedious");
 require("dotenv").config();
 
-let pool;
-let query = () => {
-  console.log("Database is mocked. Returning empty query.");
-  return Promise.resolve({ rows: [] }); // Return an empty successful query result
+const config = {
+  server: process.env.DB_SERVER, // e.g., your-server.database.windows.net
+  authentication: {
+    type: 'default',
+    options: {
+      userName: process.env.DB_USER,
+      password: process.env.DB_PASSWORD
+    }
+  },
+  options: {
+    encrypt: true,
+    database: process.env.DB_NAME
+  }
 };
 
-// ✅ ADD: Only connect to the database if mock mode is NOT active
-if (process.env.USE_MOCK_DATA !== 'true') {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-  });
+const connection = new Connection(config);
 
-  pool.connect()
-    .then(() => console.log("Connected to PostgreSQL Database via DatabaseAdapter"))
-    .catch((err) => {
-      console.error("Database Connection Failed in DatabaseAdapter:", err);
-      process.exit(1);
-    });
-  
-  // Assign the real query function
-  query = (text, params) => pool.query(text, params);
-}
+connection.on('connect', function(err) {
+  if (err) {
+    console.error("Database Connection Failed:", err);
+    process.exit(1);
+  } else {
+    console.log("Connected to Azure SQL Database!");
+  }
+});
+
+connection.connect();
 
 module.exports = {
-  query,
-  pool,
+  query: (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+      const request = new Request(sql, (err, rowCount, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        const result = rows.map(row => {
+          const rowObject = {};
+          row.forEach(col => {
+            rowObject[col.metadata.colName] = col.value;
+          });
+          return rowObject;
+        });
+        resolve({ rows: result });
+      });
+
+      params.forEach(param => {
+        request.addParameter(param.name, param.type, param.value);
+      });
+
+      connection.execSql(request);
+    });
+  },
+  TYPES // Export the TYPES object for use in other files
 };
