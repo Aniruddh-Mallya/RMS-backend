@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { query } = require("../adapters/DatabaseAdapter");
+const { query, TYPES } = require("../adapters/DatabaseAdapter");
 require("dotenv").config();
 
 const loginUser = async (email, password) => {
@@ -23,7 +23,10 @@ const loginUser = async (email, password) => {
 
   // The original database logic runs if mock mode is off
   try {
-    const result = await query("SELECT id, email, role, password FROM users WHERE email = $1", [email]);
+    const result = await query(
+      "SELECT id, email, role, password FROM users WHERE email = @email",
+      [{ name: 'email', type: TYPES.NVarChar, value: email }]
+    );
     if (result.rows.length === 0) {
       return { success: false, message: "Invalid credentials" };
     }
