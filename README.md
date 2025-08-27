@@ -12,7 +12,7 @@ This is the backend server for the Research Management System. It's a REST API b
 
 This API is deployed on **Azure App Service** and is configured for continuous integration and deployment (CI/CD) using **GitHub Actions**. Every push to the `main` branch automatically triggers a new deployment to the live environment.
 
-**Live API Endpoint:** `https://your-backend-name.azurewebsites.net/api`
+**Live API Endpoint:** `https://rms-e2g5h5f9agdtc5cw.westeurope-01.azurewebsites.net/`
 
 ---
 
